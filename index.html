@@ -1,0 +1,1818 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>腾讯微保 9周年 · 深海寻宝配对互动</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Rubik:wght@600;700;800&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+  
+  <style>
+    @layer base {
+      html, body { margin: 0; padding: 0; }
+      body { overscroll-behavior: none; }
+      main > :first-child { margin-top: 0 !important; }
+      main > :last-child { margin-bottom: 0 !important; }
+    }
+    ::-webkit-scrollbar { display: none; }
+
+    /* Animations */
+    @keyframes bubbleRise {
+      0% { transform: translateY(105vh) translateX(0) scale(0.6); opacity: 0; }
+      20% { opacity: 0.6; }
+      50% { transform: translateY(50vh) translateX(25px) scale(1); opacity: 0.8; }
+      80% { opacity: 0.6; }
+      100% { transform: translateY(-10vh) translateX(-20px) scale(1.1); opacity: 0; }
+    }
+    @keyframes causticsWave {
+      0%, 100% { opacity: 0.25; transform: scale(1) translateY(0) rotate(0deg); }
+      50% { opacity: 0.55; transform: scale(1.08) translateY(-15px) rotate(2deg); }
+    }
+    @keyframes pulseHeartbeat {
+      0%, 100% { transform: scale(1); }
+      15% { transform: scale(1.22); }
+      30% { transform: scale(1); }
+      45% { transform: scale(1.15); }
+      60% { transform: scale(1); }
+    }
+    @keyframes timerTick {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.75; transform: scale(1.05); }
+    }
+    @keyframes progressShine {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(250%); }
+    }
+    @keyframes comboGlow {
+      0%, 100% { box-shadow: 0 0 10px rgba(245,199,94,0.3), inset 0 0 6px rgba(245,199,94,0.2); }
+      50% { box-shadow: 0 0 22px rgba(245,199,94,0.7), inset 0 0 12px rgba(245,199,94,0.4); }
+    }
+    @keyframes cardShake {
+      0%, 100% { transform: translateX(0) rotate(0deg); }
+      20% { transform: translateX(-6px) rotate(-2deg); }
+      40% { transform: translateX(6px) rotate(2deg); }
+      60% { transform: translateX(-4px) rotate(-1deg); }
+      80% { transform: translateX(4px) rotate(1deg); }
+    }
+    @keyframes matchFloat {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-4px); }
+    }
+    @keyframes floatScore {
+      0% { opacity: 1; transform: translateY(0) scale(0.9); }
+      100% { opacity: 0; transform: translateY(-40px) scale(1.2); }
+    }
+
+    .animate-caustics { animation: causticsWave 9s ease-in-out infinite alternate; }
+    .animate-heartbeat { animation: pulseHeartbeat 1.8s ease-in-out infinite; }
+    .animate-timer-tick { animation: timerTick 1s ease-in-out infinite; }
+    .animate-combo-glow { animation: comboGlow 2.2s infinite ease-in-out; }
+    .animate-progress-shine { animation: progressShine 2.5s infinite linear; }
+    .card-shake-anim { animation: cardShake 0.45s ease-in-out; }
+    .matched-float-card { animation: matchFloat 4s ease-in-out infinite; }
+
+    /* 3D Flip Card Container */
+    .card-3d-wrap {
+      perspective: 1000px;
+    }
+    .card-3d-inner {
+      transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+      transform-style: preserve-3d;
+    }
+    .card-3d-front, .card-3d-back {
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+    }
+    .card-3d-front {
+      transform: rotateY(180deg);
+    }
+    .card-3d-flipped {
+      transform: rotateY(180deg);
+    }
+  </style>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "on-surface-variant": "#bccac4",
+            "tertiary-fixed": "#ffdf9b",
+            "inverse-on-surface": "#12334c",
+            "on-error-container": "#ffdad6",
+            "secondary": "#ffb599",
+            "on-primary-container": "#004e42",
+            "on-background": "#cee5ff",
+            "on-surface": "#cee5ff",
+            "surface-container-highest": "#173751",
+            "on-primary-fixed": "#00201a",
+            "surface-bright": "#1d3c55",
+            "on-secondary-container": "#ffa17c",
+            "error-container": "#93000a",
+            "on-error": "#690005",
+            "error": "#ffb4ab",
+            "primary": "#64e2c7",
+            "on-tertiary-fixed-variant": "#5b4300",
+            "primary-container": "#43c6ac",
+            "inverse-primary": "#006b5a",
+            "primary-fixed-dim": "#5cdbc0",
+            "primary-fixed": "#7bf8dc",
+            "on-tertiary-container": "#584100",
+            "on-primary-fixed-variant": "#005144",
+            "surface-container-lowest": "#000f1e",
+            "tertiary-container": "#d7ac45",
+            "outline": "#86948f",
+            "surface-tint": "#5cdbc0",
+            "background": "#001526",
+            "on-primary": "#00382e",
+            "on-secondary": "#5a1b00",
+            "tertiary-fixed-dim": "#edc157",
+            "on-tertiary-fixed": "#251a00",
+            "surface-variant": "#173751",
+            "tertiary": "#f5c75e",
+            "surface": "#001526",
+            "outline-variant": "#3d4945",
+            "on-tertiary": "#3f2e00",
+            "surface-container-high": "#092c45",
+            "on-secondary-fixed": "#370e00",
+            "secondary-fixed-dim": "#ffb599",
+            "surface-dim": "#001526",
+            "secondary-fixed": "#ffdbce",
+            "on-secondary-fixed-variant": "#7f2b01",
+            "secondary-container": "#822d03",
+            "surface-container": "#002139",
+            "surface-container-low": "#001d32",
+            "inverse-surface": "#cee5ff"
+          },
+          borderRadius: {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          spacing: {
+            "space-xl": "2.5rem",
+            "space-md": "1rem",
+            "space-sm": "0.5rem",
+            "space-lg": "1.5rem",
+            "gutter": "1.25rem",
+            "margin": "2rem",
+            "space-xs": "0.25rem"
+          },
+          fontFamily: {
+            "display-hero": ["Rubik"],
+            "headline-md": ["Rubik"],
+            "body-md": ["Be Vietnam Pro"],
+            "label-score": ["Rubik"],
+            "body-lg": ["Be Vietnam Pro"],
+            "headline-sm": ["Rubik"],
+            "headline-lg": ["Rubik"],
+            "label-md": ["Rubik"],
+            "label-sm": ["Rubik"],
+            "body-sm": ["Be Vietnam Pro"]
+          }
+        }
+      }
+    };
+  </script>
+
+  <!-- Required CDNs -->
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/history@5/umd/history.development.js"></script>
+  <script src="https://unpkg.com/react-router@6.3.0/umd/react-router.development.js"></script>
+  <script src="https://unpkg.com/react-router-dom@6.3.0/umd/react-router-dom.development.js"></script>
+  <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+</head>
+<body class="bg-background font-body-md text-on-surface antialiased min-h-screen relative selection:bg-primary selection:text-on-primary">
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect, useRef } = React;
+    const { createRoot } = ReactDOM;
+    const { MemoryRouter, Routes, Route, Link, useNavigate, useLocation } = ReactRouterDOM;
+
+    // Marine Card Archetypes representing WeSure 9th Anniversary 保障宝藏
+    const MARINE_CATALOG = [
+      { id: 'clownfish', name: '健康小丑鱼', role: '医疗健康保障', icon: 'set_meal', color: 'text-secondary' },
+      { id: 'pearl', name: '金耀明珠', role: '财富储蓄增值', icon: 'diamond', color: 'text-tertiary' },
+      { id: 'octopus', name: '八爪章鱼', role: '智能理赔助手', icon: 'smart_toy', color: 'text-tertiary' },
+      { id: 'anchor', name: '稳健金锚', role: '终身寿险基石', icon: 'anchor', color: 'text-primary' },
+      { id: 'tang', name: '深海王鱼', role: '全能重疾保障', icon: 'phishing', color: 'text-primary' },
+      { id: 'turtle', name: '长寿神龟', role: '养老补充保障', icon: 'shield', color: 'text-primary-fixed-dim' },
+      { id: 'jellyfish', name: '灵动水母', role: '门诊轻症守护', icon: 'bubble_chart', color: 'text-secondary' },
+      { id: 'dolphin', name: '领航海豚', role: '全球救援通道', icon: 'explore', color: 'text-primary-fixed' },
+      { id: 'coral', name: '繁盛珊瑚', role: '全家保联防线', icon: 'spa', color: 'text-secondary' },
+      { id: 'waves', name: '安心海浪', role: '意外畅行无忧', icon: 'waves', color: 'text-primary' },
+      { id: 'ship', name: '起航吉帆', role: '出行安全护航', icon: 'sailing', color: 'text-tertiary' },
+      { id: 'seahorse', name: '金福海马', role: '母婴特别关怀 ✨', icon: 'pets', color: 'text-tertiary' },
+    ];
+
+    // Global ambient particles & floating ocean background
+    function OceanBackground() {
+      return (
+        <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+          <div className="absolute -top-40 left-1/4 w-[750px] h-[580px] bg-primary/15 blur-[130px] rounded-full animate-caustics"></div>
+          <div className="absolute top-1/3 -right-20 w-[640px] h-[640px] bg-surface-container-high/60 blur-[120px] rounded-full animate-caustics" style={{ animationDelay: '-3s' }}></div>
+          <div className="absolute top-1/4 left-10 w-[420px] h-[420px] bg-tertiary/10 blur-[140px] rounded-full animate-caustics" style={{ animationDelay: '-5s' }}></div>
+          <div className="absolute bottom-0 left-0 right-0 h-44 bg-gradient-to-t from-surface-container-lowest via-surface-container-low/80 to-transparent"></div>
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-surface-bright/20 via-background/40 to-background pointer-events-none"></div>
+
+          {/* Bioluminescent rising bubbles */}
+          <div className="absolute rounded-full bg-primary/30 border border-primary/50 blur-[0.5px] shadow-[0_0_8px_rgba(100,226,199,0.8)]" style={{ width: '14px', height: '14px', left: '8%', animation: 'bubbleRise 11s infinite linear' }}></div>
+          <div className="absolute rounded-full bg-primary-fixed/30 border border-primary/40 blur-[0.5px] shadow-[0_0_6px_rgba(100,226,199,0.6)]" style={{ width: '10px', height: '10px', left: '22%', animation: 'bubbleRise 13s infinite linear', animationDelay: '2.5s' }}></div>
+          <div className="absolute rounded-full bg-tertiary/25 border border-tertiary/40 blur-[0.5px] shadow-[0_0_8px_rgba(245,199,94,0.6)]" style={{ width: '18px', height: '18px', left: '45%', animation: 'bubbleRise 15s infinite linear', animationDelay: '1.2s' }}></div>
+          <div className="absolute rounded-full bg-primary/35 border border-primary/60 blur-[0.5px] shadow-[0_0_10px_rgba(100,226,199,0.9)]" style={{ width: '12px', height: '12px', left: '68%', animation: 'bubbleRise 12s infinite linear', animationDelay: '4.8s' }}></div>
+          <div className="absolute rounded-full bg-tertiary/30 border border-tertiary/50 blur-[0.5px] shadow-[0_0_8px_rgba(245,199,94,0.7)]" style={{ width: '8px', height: '8px', left: '88%', animation: 'bubbleRise 14s infinite linear', animationDelay: '3.1s' }}></div>
+        </div>
+      );
+    }
+
+    // App Header Bar
+    function Header({ musicOn, setMusicOn, sfxOn, setSfxOn, onOpenRules }) {
+      const navigate = useNavigate();
+
+      return (
+        <header className="fixed top-0 w-full z-50 bg-surface-container-high/90 backdrop-blur-xl shadow-[0_4px_20px_rgba(0,15,30,0.5)] border-b border-surface-container-highest/50">
+          <div className="h-16 w-full px-gutter flex items-center justify-between">
+            <div className="flex items-center gap-space-md cursor-pointer" onClick={() => navigate('/')}>
+              <img 
+                alt="Matching Game Emblem Logo" 
+                className="h-8 w-auto object-contain hover:scale-105 transition-transform" 
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuD-UD5TxW1w6OsMqvGCjaMoUjAK3n5Z8Rq0EfWNQcdg1kmlLd5PeC5d8JvTbd5RhdDRU9tA458QVUqrBJx69bBgQVFeBLbPxfTW0PxsUbMi1JqC0I1-DaZntXF8AWcMQEe93rqQDQL5Qq9-po5911k1974H7p8QUj_caxlTyTiTURpnZ1CXiGG-9Dr5Ovt_fC4McGvMIFBYesvaYjtq5m0FV9-IFEN-42raBNB7DBTx0v-9kZtp5IDD"
+              />
+              <div className="flex flex-col">
+                <span className="font-headline-sm text-headline-sm tracking-wide text-primary leading-none">腾讯微保 9周年</span>
+                <span className="font-label-sm text-label-sm text-on-surface-variant tracking-widest uppercase mt-0.5">微保寻宝配对 · 司庆特别版</span>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-space-sm">
+              <div className="hidden sm:flex items-center gap-space-xs px-space-md py-1 bg-surface-container-low/90 rounded-full shadow-inner">
+                <span className="material-symbols-outlined text-tertiary text-[18px]">trophy</span>
+                <span className="font-label-sm text-label-sm text-tertiary uppercase">Record:</span>
+                <span className="font-label-score text-label-md text-on-surface font-bold">24,850</span>
+              </div>
+              <div className="flex items-center gap-1 bg-surface-container-lowest/80 p-1 rounded-lg">
+                <button 
+                  onClick={() => setMusicOn(!musicOn)} 
+                  className={`w-8 h-8 flex items-center justify-center rounded-lg transition-colors ${musicOn ? 'text-primary bg-surface-container-high' : 'text-on-surface-variant hover:text-primary'}`} 
+                  title="背景音乐开关" 
+                  type="button"
+                >
+                  <span className="material-symbols-outlined text-[18px]">{musicOn ? 'music_note' : 'music_off'}</span>
+                </button>
+                <button 
+                  onClick={() => setSfxOn(!sfxOn)} 
+                  className={`w-8 h-8 flex items-center justify-center rounded-lg transition-colors ${sfxOn ? 'text-primary bg-surface-container-high' : 'text-on-surface-variant hover:text-primary'}`} 
+                  title="音效开关" 
+                  type="button"
+                >
+                  <span className="material-symbols-outlined text-[18px]">{sfxOn ? 'volume_up' : 'volume_off'}</span>
+                </button>
+                <button 
+                  onClick={onOpenRules} 
+                  className="w-8 h-8 flex items-center justify-center rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-primary transition-colors" 
+                  title="游戏规则" 
+                  type="button"
+                >
+                  <span className="material-symbols-outlined text-[18px]">help</span>
+                </button>
+                <button 
+                  onClick={() => {
+                    if (!document.fullscreenElement) {
+                      document.documentElement.requestFullscreen().catch(() => {});
+                    } else {
+                      document.exitFullscreen().catch(() => {});
+                    }
+                  }} 
+                  className="w-8 h-8 flex items-center justify-center rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-primary transition-colors" 
+                  title="全屏切换" 
+                  type="button"
+                >
+                  <span className="material-symbols-outlined text-[18px]">fullscreen</span>
+                </button>
+              </div>
+              <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center shadow-[0_0_12px_rgba(100,226,199,0.4)]">
+                <span className="material-symbols-outlined text-on-primary text-[18px]">person</span>
+              </div>
+            </div>
+          </div>
+        </header>
+      );
+    }
+
+    // App Footer Bar
+    function Footer() {
+      return (
+        <footer className="relative z-10 w-full bg-surface-container-lowest/90 backdrop-blur-md py-space-sm border-t border-surface-container-highest/30">
+          <div className="w-full px-gutter flex flex-col sm:flex-row items-center justify-between gap-space-xs text-on-surface-variant">
+            <div className="flex items-center gap-space-sm">
+              <span className="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+              <span className="font-label-sm text-label-sm uppercase tracking-wider text-on-surface">WeSure 9th Anniversary Zone</span>
+              <span className="font-body-sm text-body-sm text-outline">|</span>
+              <span className="font-body-sm text-body-sm">腾讯微保深海探索 · 司庆特别版</span>
+            </div>
+            <div className="font-body-sm text-body-sm text-on-surface-variant">
+              © 腾讯微保 Tencent WeSure · 9周年寻宝配对游戏. All Rights Reserved.
+            </div>
+          </div>
+        </footer>
+      );
+    }
+
+    // ==========================================
+    // SCREEN 1: Game Setup / Configuration
+    // ==========================================
+    function SetupScreen({ config, setConfig, onOpenRules }) {
+      const navigate = useNavigate();
+
+      const matrixProfiles = [
+        { tiles: 16, cols: 4, rows: 4, pairs: 8, time: 1.5, badge: '简单', desc: '浅滩探险 · 微保新手' },
+        { tiles: 24, cols: 6, rows: 4, pairs: 12, time: 3.0, badge: '普通 (默认)', desc: '珊瑚迷宫 · 均衡守护' },
+        { tiles: 36, cols: 6, rows: 6, pairs: 18, time: 4.5, badge: '困难', desc: '深渊暗礁 · 全面保障' },
+        { tiles: 48, cols: 8, rows: 6, pairs: 24, time: 6.0, badge: '大师', desc: '海沟宝窟 · 九周年大师' },
+      ];
+
+      const mistakeOptions = [
+        { count: 3, label: '严苛', color: 'text-error' },
+        { count: 5, label: '适中 (默认)', color: 'text-secondary' },
+        { count: 8, label: '宽松', color: 'text-on-surface' },
+        { count: 10, label: '探险', color: 'text-tertiary' },
+      ];
+
+      return (
+        <main className="relative z-10 w-full pt-16 min-h-[calc(100vh-64px)] flex flex-col justify-between">
+          <div className="flex flex-col w-full">
+            <div className="relative w-full overflow-hidden px-gutter py-space-lg flex flex-col items-center justify-center">
+              
+              {/* Main Console Container */}
+              <div className="relative z-10 w-full max-w-5xl bg-surface-container-high/90 backdrop-blur-2xl rounded-xl p-6 sm:p-8 md:p-10 shadow-[0_24px_64px_rgba(0,15,30,0.8),inset_0_0_24px_rgba(67,198,172,0.18)] flex flex-col gap-y-8">
+                
+                {/* Atmospheric Header */}
+                <div className="relative flex flex-col items-center text-center">
+                  <div className="inline-flex items-center gap-space-xs px-4 py-1 rounded-full bg-surface-container-lowest/80 text-primary mb-3 shadow-[0_0_12px_rgba(100,226,199,0.3)]">
+                    <span className="material-symbols-outlined text-[18px] text-tertiary" style={{ fontVariationSettings: '"FILL" 1' }}>scuba_diving</span>
+                    <span className="font-label-sm text-label-sm uppercase tracking-widest text-primary-fixed">TENCENT WESURE 9TH ANNIVERSARY · 司庆特别呈现</span>
+                    <span className="w-1.5 h-1.5 rounded-full bg-primary animate-ping"></span>
+                  </div>
+
+                  <div className="flex items-center justify-center gap-4 sm:gap-6 w-full">
+                    <div className="hidden sm:flex flex-col items-center justify-center w-14 h-14 rounded-lg bg-surface-container-lowest p-2 shadow-[0_6px_0_#001526] transform -rotate-3 hover:rotate-0 transition-transform">
+                      <span className="material-symbols-outlined text-[32px] text-secondary" style={{ fontVariationSettings: "'FILL' 1" }}>sailing</span>
+                      <span className="font-label-sm text-[10px] text-on-surface-variant leading-none mt-1">潜水站</span>
+                    </div>
+
+                    <div className="flex flex-col items-center">
+                      <h1 className="font-display-hero text-display-hero text-transparent bg-clip-text bg-gradient-to-b from-on-surface via-primary-fixed to-primary tracking-wider uppercase drop-shadow-[0_4px_16px_rgba(67,198,172,0.4)]">
+                        腾讯微保 9周年
+                      </h1>
+                      <p className="font-headline-sm text-headline-sm text-tertiary mt-1 tracking-normal font-semibold">
+                        微保9周年探寻深海保障宝藏，守护每一份确定的幸福！
+                      </p>
+                    </div>
+
+                    <div className="hidden sm:flex flex-col items-center justify-center w-14 h-14 rounded-lg bg-surface-container-lowest p-2 shadow-[0_6px_0_#001526] transform rotate-3 hover:rotate-0 transition-transform">
+                      <span className="material-symbols-outlined text-[32px] text-tertiary" style={{ fontVariationSettings: "'FILL' 1" }}>inventory_2</span>
+                      <span className="font-label-sm text-[10px] text-on-surface-variant leading-none mt-1">宝藏箱</span>
+                    </div>
+                  </div>
+
+                  <div className="w-full flex items-center justify-center gap-2 mt-4 opacity-75">
+                    <div className="h-[2px] w-24 bg-gradient-to-r from-transparent to-primary/60"></div>
+                    <span className="material-symbols-outlined text-primary text-[14px]">anchor</span>
+                    <span className="font-body-sm text-body-sm text-on-surface-variant tracking-widest">微保9周年海底保障寻宝配置 · SUB-AQUATIC MATRIX</span>
+                    <span className="material-symbols-outlined text-primary text-[14px]">anchor</span>
+                    <div className="h-[2px] w-24 bg-gradient-to-l from-transparent to-primary/60"></div>
+                  </div>
+                </div>
+
+                {/* Main Split: Settings & Visual Preview */}
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+                  {/* Left: Configuration (7 Cols) */}
+                  <div className="lg:col-span-7 flex flex-col gap-6 bg-surface-container-low/80 backdrop-blur-md rounded-xl p-6 shadow-inner">
+                    {/* Section 1: Number of Tiles */}
+                    <div className="flex flex-col gap-3">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <span className="w-2.5 h-2.5 rounded-full bg-primary shadow-[0_0_8px_rgba(100,226,199,0.8)]"></span>
+                          <span className="font-headline-sm text-headline-sm text-on-surface">牌的张数 (Tiles Matrix)</span>
+                        </div>
+                        <span className="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">4 Grid Profiles</span>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-3">
+                        {matrixProfiles.map((prof) => {
+                          const isSelected = config.tiles === prof.tiles;
+                          return (
+                            <button
+                              key={prof.tiles}
+                              onClick={() => setConfig({ ...config, tiles: prof.tiles, cols: prof.cols, pairs: prof.pairs, time: prof.time })}
+                              className={`group relative p-3 rounded-lg text-left transition-all active:translate-y-1 active:shadow-none ${
+                                isSelected
+                                  ? 'bg-primary-container/20 shadow-[0_4px_0_#004e42,0_0_20px_rgba(67,198,172,0.35)]'
+                                  : 'bg-surface-container-high hover:bg-surface-bright shadow-[0_4px_0_#000f1e]'
+                              }`}
+                              style={{ outline: isSelected ? '2px solid #43c6ac' : 'none' }}
+                              type="button"
+                            >
+                              <div className="flex items-center justify-between">
+                                <span className={`font-headline-sm text-[16px] font-bold ${isSelected ? 'text-primary' : 'text-on-surface'}`}>
+                                  {prof.tiles}张 · {prof.rows}×{prof.cols}
+                                </span>
+                                <span className={`px-2 py-0.5 rounded text-[11px] font-label-sm ${
+                                  isSelected ? 'bg-primary text-on-primary font-bold shadow-[0_0_8px_rgba(100,226,199,0.5)]' : 'bg-surface-container text-on-surface-variant'
+                                }`}>
+                                  {prof.badge}
+                                </span>
+                              </div>
+                              <p className={`font-body-sm text-body-sm mt-1 ${isSelected ? 'text-primary-fixed' : 'text-on-surface-variant'}`}>
+                                {prof.desc}
+                              </p>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    {/* Section 2: Allowed Mistakes */}
+                    <div className="flex flex-col gap-3">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <span className="w-2.5 h-2.5 rounded-full bg-secondary shadow-[0_0_8px_rgba(255,181,153,0.8)]"></span>
+                          <span className="font-headline-sm text-headline-sm text-on-surface">允许失败次数 (Oxygen & Mistakes)</span>
+                        </div>
+                        <span className="font-label-sm text-label-sm text-secondary uppercase tracking-wider">Failure Threshold</span>
+                      </div>
+
+                      <div className="grid grid-cols-4 gap-2.5">
+                        {mistakeOptions.map((item) => {
+                          const isSelected = config.mistakes === item.count;
+                          return (
+                            <button
+                              key={item.count}
+                              onClick={() => setConfig({ ...config, mistakes: item.count })}
+                              className={`flex flex-col items-center justify-center p-3 rounded-lg transition-all active:translate-y-1 active:shadow-none ${
+                                isSelected
+                                  ? 'bg-secondary-container/30 shadow-[0_4px_0_#5a1b00,0_0_16px_rgba(255,181,153,0.3)]'
+                                  : 'bg-surface-container-high hover:bg-surface-bright shadow-[0_4px_0_#000f1e]'
+                              }`}
+                              style={{ outline: isSelected ? '2px solid #ffb599' : 'none' }}
+                              type="button"
+                            >
+                              <span className={`font-label-score text-label-score font-extrabold ${item.color}`}>
+                                {item.count}次
+                              </span>
+                              <span className="font-label-sm text-label-sm text-on-surface-variant mt-0.5">
+                                {item.label}
+                              </span>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    {/* Marine Biome Art Strip */}
+                    <div className="relative w-full h-28 rounded-lg overflow-hidden bg-surface-container-lowest flex items-center justify-between px-5 shadow-inner">
+                      <div
+                        className="absolute inset-0 opacity-30 mix-blend-screen bg-cover bg-center"
+                        style={{
+                          backgroundImage:
+                            "url('https://lh3.googleusercontent.com/aida-public/AB6AXuAZVs2M7mf7KqFEfJxELzQ7esAxBASnRlFtb8quG_CH_ArYAZc3xfekfdlEjlwJNqJKxXPRgAUWb-w3hKSS0Nb-e4Xiq5MTaHUptuw3Tzv09MaabqO-U5z_WWBCnVQOJRtKlVrn4zAdAI-3m7bOjoFfPl45cSIjcNNxvZSX1HIqDLtWWKSFF089rU5UXuJvoK0dQsoURg8DyfIBiKurTp8bwlOENIK8risfFfXX3PpCyU5LDc5NA6ru')"
+                        }}
+                      ></div>
+                      <div className="relative z-10 flex flex-col">
+                        <span className="font-label-sm text-label-sm text-primary uppercase tracking-widest">WeSure 9th Special Biome</span>
+                        <span className="font-headline-sm text-headline-sm text-on-surface font-bold">微保九周年 · 深海专属保障图鉴 (Coral Trench)</span>
+                        <span className="font-body-sm text-body-sm text-on-surface-variant">包含百万医疗险、重疾保障、意外守护、企鹅福袋等12种周年海洋宝藏</span>
+                      </div>
+                      <div className="relative z-10 flex items-center gap-2">
+                        <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary shadow-[0_0_12px_rgba(67,198,172,0.5)]">
+                          <span className="material-symbols-outlined text-[24px]">explore</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Right: Dynamic Grid Preview (5 Cols) */}
+                  <div className="lg:col-span-5 flex flex-col gap-4 justify-between bg-surface-container-low/90 backdrop-blur-md rounded-xl p-6 shadow-inner">
+                    <div className="flex flex-col gap-3">
+                      <div className="flex items-center justify-between">
+                        <span className="font-headline-sm text-headline-sm text-on-surface flex items-center gap-2">
+                          <span className="material-symbols-outlined text-tertiary">grid_view</span>
+                          阵列实时透视
+                        </span>
+                        <span className="font-label-sm text-label-sm text-tertiary-fixed bg-tertiary-container/30 px-2 py-0.5 rounded uppercase">LIVE PREVIEW</span>
+                      </div>
+
+                      {/* Mini Preview Canvas */}
+                      <div className="w-full bg-surface-container-lowest p-4 rounded-xl flex flex-col items-center justify-center min-h-[170px] shadow-[inset_0_4px_12px_rgba(0,0,0,0.6)]">
+                        <div 
+                          className="grid gap-1.5 w-full max-w-[280px]" 
+                          style={{ gridTemplateColumns: `repeat(${config.cols}, minmax(0, 1fr))` }}
+                        >
+                          {Array.from({ length: config.tiles }).map((_, i) => (
+                            <div key={i} className="aspect-square rounded bg-surface-container flex items-center justify-center text-[11px] text-primary/60 transition-transform hover:scale-105">
+                              {i < 4 ? (
+                                <span className="material-symbols-outlined text-[12px] text-secondary">
+                                  {['sailing', 'bubble_chart', 'anchor', 'explore'][i % 4]}
+                                </span>
+                              ) : (
+                                <span className="w-1.5 h-1.5 rounded-full bg-primary/30"></span>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Telemetry HUD */}
+                      <div className="grid grid-cols-2 gap-2 mt-2">
+                        <div className="bg-surface-container p-3 rounded-lg flex flex-col">
+                          <span className="font-body-sm text-[12px] text-on-surface-variant">总计卡牌 / 目标配对</span>
+                          <span className="font-label-score text-label-score text-primary font-bold">
+                            {config.tiles}张 <span className="text-on-surface-variant text-[14px]">/ {config.pairs}对</span>
+                          </span>
+                        </div>
+                        <div className="bg-surface-container p-3 rounded-lg flex flex-col">
+                          <span className="font-body-sm text-[12px] text-on-surface-variant">容错机会</span>
+                          <span className="font-label-score text-label-score text-secondary font-bold">
+                            {config.mistakes}次 <span className="text-on-surface-variant text-[14px]">严控</span>
+                          </span>
+                        </div>
+                        <div className="bg-surface-container p-3 rounded-lg flex flex-col">
+                          <span className="font-body-sm text-[12px] text-on-surface-variant">预计探险时长</span>
+                          <span className="font-label-score text-label-score text-tertiary font-bold">
+                            {config.time} <span className="text-on-surface-variant text-[14px]">分钟</span>
+                          </span>
+                        </div>
+                        <div className="bg-surface-container p-3 rounded-lg flex flex-col">
+                          <span className="font-body-sm text-[12px] text-on-surface-variant">海底能见度</span>
+                          <span className="font-label-score text-label-score text-primary-fixed font-bold">
+                            98% <span className="text-on-surface-variant text-[14px]">高清</span>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="bg-surface-container/60 rounded-lg p-3 flex items-start gap-3">
+                      <span className="material-symbols-outlined text-primary text-[22px] mt-0.5">help_outline</span>
+                      <div className="flex flex-col">
+                        <span className="font-label-md text-label-md text-on-surface font-semibold">快速通关法则</span>
+                        <p className="font-body-sm text-[12px] text-on-surface-variant mt-0.5 leading-relaxed">
+                          翻开两张牌匹配微保保障海洋生物；连续配对触发连击倍数与司庆积分，机会耗尽探险中止。
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Bottom Control Bar */}
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4">
+                  <button
+                    onClick={onOpenRules}
+                    className="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-surface-container-low hover:bg-surface-container-high text-on-surface flex items-center justify-center gap-2 font-headline-sm text-[16px] shadow-[0_4px_0_#001526] active:translate-y-1 active:shadow-none transition-all cursor-pointer"
+                    type="button"
+                  >
+                    <span className="material-symbols-outlined text-[20px] text-primary">menu_book</span>
+                    <span>玩法说明 (Rules)</span>
+                  </button>
+
+                  <button
+                    onClick={() => navigate('/ocean-matrix-playfield')}
+                    className="w-full sm:flex-1 max-w-md py-4 px-8 rounded-xl bg-[#FF8A5B] hover:bg-[#ff9c74] text-white flex items-center justify-center gap-3 font-headline-lg text-[22px] tracking-wide shadow-[0_6px_0_#E05A47,0_0_28px_rgba(255,138,91,0.5)] active:translate-y-1 active:shadow-[0_2px_0_#E05A47] transition-all cursor-pointer"
+                    type="button"
+                  >
+                    <span className="material-symbols-outlined text-[28px] animate-pulse" style={{ fontVariationSettings: '"FILL" 1' }}>play_circle</span>
+                    <span className="drop-shadow-md">开启微保9周年寻宝 (START DIVE)</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+      );
+    }
+
+    // ==========================================
+    // SCREEN 4: Interactive Ocean Matrix Playfield
+    // ==========================================
+    function PlayfieldScreen({ config, onOpenPause, onTriggerVictory, onTriggerDefeat }) {
+      const navigate = useNavigate();
+
+      // Setup cards deck based on current config
+      const [cards, setCards] = useState([]);
+      const [flippedIndexes, setFlippedIndexes] = useState([]);
+      const [matchedPairIds, setMatchedPairIds] = useState([]);
+      const [lives, setLives] = useState(config.mistakes);
+      const [elapsedSeconds, setElapsedSeconds] = useState(88); // 01:28 as design prototype
+      const [sonarCount, setSonarCount] = useState(1);
+      const [toast, setToast] = useState(null);
+      const [scorePopups, setScorePopups] = useState([]);
+      const [shakingCards, setShakingCards] = useState([]);
+
+      const totalPairs = config.pairs;
+      const isEvaluatingRef = useRef(false);
+
+      // Generate grid deck with 11 pairs pre-matched to match Screen 4's exact prototype state (11/12 completed)
+      useEffect(() => {
+        const availableItems = MARINE_CATALOG.slice(0, totalPairs);
+        let deck = [];
+        availableItems.forEach((item) => {
+          deck.push({ ...item, key: `${item.id}-a` });
+          deck.push({ ...item, key: `${item.id}-b` });
+        });
+
+        // If default 24 cards (12 pairs), pre-match 11 pairs and leave Seahorse for interactive finale
+        if (totalPairs === 12) {
+          const preMatched = availableItems.filter(i => i.id !== 'seahorse').map(i => i.id);
+          setMatchedPairIds(preMatched);
+        } else {
+          setMatchedPairIds([]);
+        }
+
+        setCards(deck);
+        setLives(config.mistakes);
+      }, [config]);
+
+      // Timer effect
+      useEffect(() => {
+        const timer = setInterval(() => {
+          setElapsedSeconds((prev) => prev + 1);
+        }, 1000);
+        return () => clearInterval(timer);
+      }, []);
+
+      const formatTime = (secs) => {
+        const m = Math.floor(secs / 60);
+        const s = secs % 60;
+        return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+      };
+
+      const triggerToast = (text) => {
+        setToast(text);
+        setTimeout(() => setToast(null), 2400);
+      };
+
+      const spawnPopup = (text) => {
+        const id = Date.now() + Math.random();
+        setScorePopups((prev) => [...prev, { id, text }]);
+        setTimeout(() => {
+          setScorePopups((prev) => prev.filter(p => p.id !== id));
+        }, 1200);
+      };
+
+      // Card Flip Handler
+      const handleCardClick = (index) => {
+        if (isEvaluatingRef.current) return;
+        if (flippedIndexes.includes(index)) return;
+        const card = cards[index];
+        if (matchedPairIds.includes(card.id)) return;
+
+        spawnPopup('+800 PTS');
+
+        const newFlipped = [...flippedIndexes, index];
+        setFlippedIndexes(newFlipped);
+
+        if (newFlipped.length === 2) {
+          isEvaluatingRef.current = true;
+          const [firstIdx, secondIdx] = newFlipped;
+          const card1 = cards[firstIdx];
+          const card2 = cards[secondIdx];
+
+          if (card1.id === card2.id) {
+            // MATCH SUCCESS!
+            setTimeout(() => {
+              const updatedMatched = [...matchedPairIds, card1.id];
+              setMatchedPairIds(updatedMatched);
+              setFlippedIndexes([]);
+              isEvaluatingRef.current = false;
+
+              spawnPopup('🎉 完美配对 x2.0!');
+              triggerToast('🎉 配对成功！已集齐微保九周年全部海洋守护！');
+
+              if (updatedMatched.length >= totalPairs) {
+                setTimeout(() => {
+                  navigate('/mission-complete');
+                }, 900);
+              }
+            }, 600);
+          } else {
+            // MISTAKE
+            setTimeout(() => {
+              const nextLives = lives - 1;
+              setLives(nextLives);
+              setShakingCards([firstIdx, secondIdx]);
+              triggerToast('⚠️ 选错了！扣除1次心率容错机会');
+
+              setTimeout(() => {
+                setShakingCards([]);
+                setFlippedIndexes([]);
+                isEvaluatingRef.current = false;
+                if (nextLives <= 0) {
+                  navigate('/mission-failed');
+                }
+              }, 600);
+            }, 500);
+          }
+        }
+      };
+
+      const simulateMistake = () => {
+        const next = lives - 1;
+        setLives(Math.max(0, next));
+        triggerToast('⚠️ 选错了！扣除1次心率容错机会');
+        if (next <= 0) {
+          setTimeout(() => navigate('/mission-failed'), 600);
+        }
+      };
+
+      const restartGame = () => {
+        setLives(config.mistakes);
+        setElapsedSeconds(0);
+        setFlippedIndexes([]);
+        if (totalPairs === 12) {
+          const preMatched = MARINE_CATALOG.slice(0, 11).map(i => i.id);
+          setMatchedPairIds(preMatched);
+        } else {
+          setMatchedPairIds([]);
+        }
+        triggerToast('游戏已重置，祝您顺利通关微保九周年！');
+      };
+
+      const triggerSonarHint = () => {
+        if (sonarCount > 0) {
+          setSonarCount(sonarCount - 1);
+          triggerToast('🔍 声呐透视已激活：最后两张牌就是【金福海马】！');
+        } else {
+          triggerToast('声呐透视次数已用尽！');
+        }
+      };
+
+      const matchedCount = matchedPairIds.length;
+      const progressPercent = Math.min(100, Math.round((matchedCount / totalPairs) * 100));
+
+      return (
+        <main className="relative z-10 w-full pt-20 min-h-[calc(100vh-64px)] flex flex-col justify-between">
+          {/* Toast Notification */}
+          {toast && (
+            <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-xl bg-surface-container-highest/95 border border-primary/50 text-primary text-sm font-label-md shadow-2xl backdrop-blur-md pointer-events-none flex items-center gap-2 animate-bounce">
+              <span className="material-symbols-outlined text-[18px]">verified</span>
+              <span>{toast}</span>
+            </div>
+          )}
+
+          {/* Floating score sparkle popups */}
+          {scorePopups.map((p) => (
+            <div
+              key={p.id}
+              className="fixed font-label-score font-bold text-tertiary drop-shadow-[0_0_10px_rgba(245,199,94,0.8)] text-lg pointer-events-none z-50"
+              style={{ left: '50%', top: '48%', transform: 'translate(-50%, -50%)', animation: 'floatScore 1.2s forwards cubic-bezier(0.2, 0.8, 0.2, 1)' }}
+            >
+              {p.text}
+            </div>
+          ))}
+
+          <div className="flex flex-col w-full">
+            <div className="relative w-full px-gutter py-space-xs flex flex-col gap-space-sm max-w-[1720px] mx-auto overflow-hidden">
+              
+              {/* Playfield HUD Bar */}
+              <section className="w-full bg-surface-container-high/85 backdrop-blur-xl rounded-xl px-space-md py-space-sm shadow-[0_12px_32px_rgba(0,15,30,0.6)] border border-surface-variant/30 flex flex-wrap items-center justify-between gap-space-sm">
+                <div className="flex items-center gap-space-md flex-wrap">
+                  {/* Combo Badge */}
+                  <div className="relative flex items-center gap-2 bg-surface-container-lowest/70 px-3 py-1.5 rounded-lg border border-tertiary/40 animate-combo-glow transition-all">
+                    <span className="material-symbols-outlined text-tertiary text-[20px] animate-bounce">bolt</span>
+                    <span className="font-label-md text-tertiary font-bold tracking-wide">连击增益: 4x COMBO! (得分 x1.5)</span>
+                    <div className="absolute -top-3 right-2 text-[11px] font-bold text-tertiary font-label-score animate-pulse pointer-events-none">+1,200</div>
+                  </div>
+
+                  <div className="flex items-center gap-2 bg-surface-container-lowest/70 px-3 py-1.5 rounded-lg border border-surface-variant/30 transition-all hover:border-secondary/40">
+                    <span className="material-symbols-outlined text-secondary text-[20px] animate-pulse">security</span>
+                    <span className="font-body-sm text-on-surface-variant">
+                      深海守护任务：还差 <strong className="text-primary font-bold text-[16px] drop-shadow-[0_0_8px_rgba(100,226,199,0.8)]">{totalPairs - matchedCount}</strong> 对卡牌达成全域保障！
+                    </span>
+                  </div>
+                </div>
+
+                {/* Progress Bar & Telemetry */}
+                <div className="flex items-center gap-space-sm flex-1 min-w-[280px] max-w-[500px]">
+                  <div className="w-full flex flex-col gap-1">
+                    <div className="flex justify-between items-center text-xs">
+                      <span className="text-on-surface-variant font-label-sm">探险探索进度</span>
+                      <span className="text-primary font-bold font-label-score text-sm">{matchedCount}/{totalPairs} 完成</span>
+                    </div>
+                    <div className="w-full h-3 bg-surface-container-lowest rounded-full overflow-hidden p-0.5 border border-surface-variant/30 relative shadow-inner">
+                      <div 
+                        className="h-full bg-gradient-to-r from-primary-container via-primary to-primary-fixed rounded-full shadow-[0_0_12px_rgba(100,226,199,0.7)] transition-all duration-500 relative overflow-hidden"
+                        style={{ width: `${progressPercent}%` }}
+                      >
+                        <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/50 to-transparent animate-progress-shine"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Actions & Heart Rate HUD */}
+                <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-1.5 bg-surface-container-lowest/80 px-2.5 py-1 rounded-lg border border-surface-variant/40 shadow-inner">
+                    <div className="flex items-center gap-0.5 text-secondary animate-heartbeat">
+                      {Array.from({ length: config.mistakes }).map((_, i) => (
+                        <span 
+                          key={i} 
+                          className={`material-symbols-outlined text-[18px] sm:text-[20px] transition-transform hover:scale-125 ${i < lives ? 'text-secondary' : 'text-outline-variant/60'}`}
+                          style={{ fontVariationSettings: i < lives ? "'FILL' 1" : "'FILL' 0" }}
+                        >
+                          favorite
+                        </span>
+                      ))}
+                    </div>
+                    <span className="font-label-sm text-secondary font-bold ml-1">{lives}/{config.mistakes}</span>
+                  </div>
+
+                  <div className="flex items-center gap-1 bg-surface-container-lowest/80 px-2.5 py-1 rounded-lg border border-surface-variant/40 shadow-inner">
+                    <span className="material-symbols-outlined text-primary text-[18px] animate-timer-tick">timer</span>
+                    <span className="font-label-score text-primary font-bold tracking-wider">{formatTime(elapsedSeconds)}</span>
+                  </div>
+
+                  <button
+                    onClick={triggerSonarHint}
+                    className="relative overflow-hidden px-3 py-1.5 bg-surface-container-low hover:bg-surface-bright active:scale-95 text-on-surface rounded-lg font-label-md text-[13px] flex items-center gap-1.5 transition-all border border-surface-variant/40 hover:border-primary/50 shadow-sm cursor-pointer"
+                    type="button"
+                  >
+                    <span className="material-symbols-outlined text-primary text-[18px]">radar</span>
+                    <span>声呐透视 ({sonarCount})</span>
+                  </button>
+
+                  <button
+                    onClick={onOpenPause}
+                    className="px-2.5 py-1.5 bg-surface-container-low hover:bg-surface-bright active:scale-95 text-on-surface rounded-lg font-label-md text-[13px] flex items-center gap-1 border border-surface-variant/40 hover:border-primary/50 shadow-sm cursor-pointer"
+                    type="button"
+                  >
+                    <span className="material-symbols-outlined text-primary text-[18px]">pause_circle</span>
+                    <span className="hidden sm:inline">暂停</span>
+                  </button>
+
+                  <button
+                    onClick={restartGame}
+                    className="px-2.5 py-1.5 bg-surface-container-low hover:bg-surface-bright active:scale-95 text-on-surface rounded-lg font-label-md text-[13px] flex items-center gap-1 border border-surface-variant/40 hover:border-tertiary/50 shadow-sm cursor-pointer"
+                    type="button"
+                  >
+                    <span className="material-symbols-outlined text-tertiary text-[18px]">sync</span>
+                    <span className="hidden sm:inline">重开</span>
+                  </button>
+                </div>
+              </section>
+
+              {/* 4x6 Matrix Grid with 3D Flip Mechanics */}
+              <div className="relative w-full flex flex-col items-center">
+                <div className="relative z-10 w-full grid grid-cols-6 grid-rows-4 gap-2 sm:gap-space-sm my-space-xs p-space-sm sm:p-space-md bg-surface-container-low/70 rounded-2xl backdrop-blur-md shadow-[0_20px_50px_rgba(0,15,30,0.8)] border border-surface-variant/40">
+                  {cards.map((card, index) => {
+                    const isMatched = matchedPairIds.includes(card.id);
+                    const isFlipped = flippedIndexes.includes(index);
+                    const isShaking = shakingCards.includes(index);
+
+                    if (isMatched) {
+                      // Already Matched Card (Screens 4 standard)
+                      return (
+                        <div
+                          key={card.key}
+                          className="relative aspect-square w-full rounded-xl bg-surface-bright/95 p-1.5 sm:p-space-xs flex flex-col items-center justify-between shadow-[0_0_18px_rgba(100,226,199,0.35)] transition-all duration-300 cursor-pointer hover:scale-[1.03] hover:shadow-[0_0_26px_rgba(100,226,199,0.6)] border border-primary/40 matched-float-card group"
+                        >
+                          <div className="w-full flex justify-between items-center px-1">
+                            <span className="font-label-sm text-[10px] sm:text-[11px] text-primary font-bold">{card.name}</span>
+                            <span className="bg-primary/20 text-primary rounded-full px-1.5 py-0.2 flex items-center gap-0.5 text-[10px] font-bold">
+                              <span className="material-symbols-outlined text-[12px]">check</span>已守护
+                            </span>
+                          </div>
+                          <div className="relative w-12 h-12 sm:w-16 sm:h-16 flex items-center justify-center">
+                            <div className="absolute inset-0 bg-primary/15 rounded-full blur-md group-hover:bg-primary/30 transition-colors"></div>
+                            <span className={`material-symbols-outlined text-[36px] sm:text-[46px] drop-shadow-md group-hover:scale-110 transition-transform duration-300 ${card.color}`} style={{ fontVariationSettings: "'FILL' 1" }}>
+                              {card.icon}
+                            </span>
+                          </div>
+                          <div className="w-full text-center pb-0.5">
+                            <span className="font-body-sm text-[11px] text-on-surface-variant font-medium">{card.role}</span>
+                          </div>
+                        </div>
+                      );
+                    }
+
+                    // Interactive Unmatched Card with 3D Flip
+                    return (
+                      <div
+                        key={card.key}
+                        onClick={() => handleCardClick(index)}
+                        className={`card-3d-wrap group relative aspect-square w-full cursor-pointer select-none ${isShaking ? 'card-shake-anim ring-2 ring-error rounded-xl' : ''}`}
+                      >
+                        <div className={`card-3d-inner w-full h-full relative rounded-xl shadow-[0_6px_0_#000f1e] hover:shadow-[0_8px_20px_rgba(100,226,199,0.35)] hover:scale-[1.05] transition-all duration-300 ${isFlipped ? 'card-3d-flipped' : ''}`}>
+                          {/* Card Back */}
+                          <div className="card-3d-back absolute inset-0 w-full h-full rounded-xl bg-surface-container p-2 flex flex-col items-center justify-center border border-primary/30 group-hover:border-primary transition-colors">
+                            <div className="w-full h-full rounded-lg bg-surface-container-high/80 flex flex-col items-center justify-center relative overflow-hidden group-hover:bg-surface-bright transition-colors">
+                              <span className="material-symbols-outlined text-primary/40 text-[38px] group-hover:text-primary group-hover:scale-110 transition-all duration-300">
+                                {index % 2 === 0 ? 'anchor' : 'waves'}
+                              </span>
+                              <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_transparent_40%,_rgba(0,15,30,0.5)_100%)]"></div>
+                              <div className="absolute bottom-1.5 text-[10px] text-primary/60 font-label-sm uppercase tracking-wider group-hover:text-primary transition-colors">
+                                点击翻牌
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Card Front */}
+                          <div className="card-3d-front absolute inset-0 w-full h-full rounded-xl bg-surface-bright p-1.5 sm:p-space-xs flex flex-col items-center justify-between border-2 border-tertiary shadow-[0_0_24px_rgba(245,199,94,0.6)]">
+                            <div className="w-full flex justify-between items-center px-1">
+                              <span className="font-label-sm text-[10px] sm:text-[11px] text-tertiary font-bold">{card.name}</span>
+                              <span className="bg-tertiary/20 text-tertiary rounded-full px-1.5 text-[10px] font-bold animate-pulse">匹配中</span>
+                            </div>
+                            <div className="relative w-12 h-12 sm:w-16 sm:h-16 flex items-center justify-center">
+                              <div className="absolute inset-0 bg-tertiary/20 rounded-full blur-md animate-ping opacity-60"></div>
+                              <span className="material-symbols-outlined text-tertiary text-[36px] sm:text-[46px] drop-shadow animate-bounce" style={{ fontVariationSettings: "'FILL' 1" }}>
+                                {card.icon}
+                              </span>
+                            </div>
+                            <div className="w-full text-center pb-0.5">
+                              <span className="font-body-sm text-[11px] text-tertiary font-bold">{card.role}</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Bottom Exploration Tip Bar with Quick Diagnostics */}
+              <section className="w-full bg-surface-container-high/85 backdrop-blur-xl rounded-xl p-space-sm flex flex-col sm:flex-row items-center justify-between gap-space-sm shadow-[0_8px_24px_rgba(0,15,30,0.5)] border border-surface-variant/30">
+                <div className="flex items-center gap-space-sm">
+                  <div className="w-9 h-9 rounded-lg bg-tertiary-container/30 flex items-center justify-center text-tertiary flex-shrink-0 animate-bounce">
+                    <span className="material-symbols-outlined text-[22px]">lightbulb</span>
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="font-body-md text-[14px] sm:text-body-md text-on-surface font-medium">翻开最后一对卡牌，激活微保九周年全部海洋守护图腾！</span>
+                    <span className="font-body-sm text-[12px] sm:text-body-sm text-on-surface-variant">提示：点击右下角最后两张牌即可真实触发3D翻牌与全胜通关结算；也可使用快捷操作进行完整流程走查。</span>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-space-sm flex-shrink-0">
+                  <button
+                    onClick={simulateMistake}
+                    className="px-2.5 py-1.5 bg-surface-container-low hover:bg-error-container/30 active:scale-95 text-error text-xs rounded-lg transition-all border border-error/30 flex items-center gap-1 shadow-sm cursor-pointer"
+                    title="消耗1次容错测试"
+                    type="button"
+                  >
+                    <span className="material-symbols-outlined text-[15px]">heart_broken</span>
+                    <span>扣除心率</span>
+                  </button>
+                  <button
+                    onClick={() => navigate('/mission-failed')}
+                    className="px-2.5 py-1.5 bg-surface-container-low hover:bg-error-container/40 active:scale-95 text-error text-xs rounded-lg transition-all border border-error/30 shadow-sm cursor-pointer"
+                    title="查看失败结算页面"
+                    type="button"
+                  >
+                    <span>跳转失败页</span>
+                  </button>
+                  <button
+                    onClick={() => navigate('/mission-complete')}
+                    className="px-3 py-1.5 bg-primary/20 hover:bg-primary/30 active:scale-95 text-primary text-xs rounded-lg transition-all border border-primary/40 font-bold shadow-sm cursor-pointer"
+                    title="查看胜利结算页面"
+                    type="button"
+                  >
+                    <span>跳转胜利页</span>
+                  </button>
+                </div>
+              </section>
+            </div>
+          </div>
+        </main>
+      );
+    }
+
+    // ==========================================
+    // SCREEN 2: Pause Modal (Expedition on Hold)
+    // ==========================================
+    function PauseScreen({ onClose, onRestart }) {
+      const navigate = useNavigate();
+      const [bgm, setBgm] = useState(75);
+      const [sfx, setSfx] = useState(90);
+      const [rulesOpen, setRulesOpen] = useState(false);
+
+      return (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-gutter bg-background/80 backdrop-blur-md">
+          <div className="w-full max-w-2xl bg-surface-container-high/95 backdrop-blur-2xl rounded-2xl shadow-[0_24px_64px_rgba(0,15,30,0.8),0_0_36px_rgba(67,198,172,0.18)] overflow-hidden transition-all duration-300">
+            {/* Top Gauge Header */}
+            <div className="relative bg-surface-container-highest/90 px-space-lg py-space-md flex items-center justify-between">
+              <div className="flex items-center gap-space-xs">
+                <div className="w-2.5 h-2.5 rounded-full bg-surface-bright shadow-inner"></div>
+                <div className="w-2.5 h-2.5 rounded-full bg-surface-bright shadow-inner"></div>
+              </div>
+              <div className="flex items-center gap-space-sm">
+                <div className="w-7 h-7 rounded-lg bg-surface-container-lowest flex items-center justify-center text-primary shadow-[0_0_12px_rgba(100,226,199,0.35)]">
+                  <span className="material-symbols-outlined text-[18px]">pause_circle</span>
+                </div>
+                <h2 className="font-headline-sm text-headline-sm text-primary tracking-wide flex items-center gap-2">
+                  <span>微保寻宝暂停</span>
+                  <span className="font-label-sm text-label-sm px-2 py-0.5 rounded bg-primary/10 text-primary-fixed uppercase tracking-wider">EXPEDITION ON HOLD</span>
+                </h2>
+              </div>
+              <div className="flex items-center gap-space-xs">
+                <div className="w-2.5 h-2.5 rounded-full bg-surface-bright shadow-inner"></div>
+                <div className="w-2.5 h-2.5 rounded-full bg-surface-bright shadow-inner"></div>
+              </div>
+            </div>
+
+            <div className="p-space-lg flex flex-col gap-space-md">
+              {/* Telemetry Ribbon */}
+              <div className="bg-surface-container-lowest/80 rounded-xl p-space-sm shadow-inner flex flex-wrap items-center justify-around gap-space-sm text-center">
+                <div className="flex flex-col items-center px-space-sm py-1 min-w-[120px]">
+                  <span className="font-label-sm text-label-sm text-on-surface-variant flex items-center gap-1">
+                    <span className="material-symbols-outlined text-primary text-[14px]">grid_view</span>微保配对进度
+                  </span>
+                  <span className="font-headline-sm text-headline-sm text-primary font-bold">11 <span className="text-body-sm font-normal text-on-surface-variant">/ 12 对</span></span>
+                </div>
+                <div className="w-px h-8 bg-surface-variant hidden sm:block"></div>
+                <div className="flex flex-col items-center px-space-sm py-1 min-w-[120px]">
+                  <span className="font-label-sm text-label-sm text-on-surface-variant flex items-center gap-1">
+                    <span className="material-symbols-outlined text-secondary text-[14px]">favorite</span>剩余守护容错
+                  </span>
+                  <span className="font-headline-sm text-headline-sm text-secondary font-bold">4 <span className="text-body-sm font-normal text-on-surface-variant">次心率</span></span>
+                </div>
+                <div className="w-px h-8 bg-surface-variant hidden sm:block"></div>
+                <div className="flex flex-col items-center px-space-sm py-1 min-w-[120px]">
+                  <span className="font-label-sm text-label-sm text-on-surface-variant flex items-center gap-1">
+                    <span className="material-symbols-outlined text-tertiary text-[14px]">timer</span>下潜守护时长
+                  </span>
+                  <span className="font-headline-sm text-headline-sm text-tertiary font-bold">02:14</span>
+                </div>
+              </div>
+
+              {/* Acoustics Controls */}
+              <div className="bg-surface-container-low/90 rounded-xl p-space-md shadow-md flex flex-col gap-space-sm">
+                <div className="flex items-center justify-between">
+                  <span className="font-label-md text-label-md text-on-surface flex items-center gap-1.5">
+                    <span className="material-symbols-outlined text-primary text-[18px]">tune</span>
+                    舱内声学配置 (Acoustics)
+                  </span>
+                  <span className="font-label-sm text-label-sm text-on-surface-variant">48kHz 立体声</span>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-space-md pt-1">
+                  <div className="flex flex-col gap-1.5 bg-surface-container-lowest/60 p-space-sm rounded-lg">
+                    <div className="flex items-center justify-between font-label-sm text-label-sm text-on-surface-variant">
+                      <span className="flex items-center gap-1"><span className="material-symbols-outlined text-[16px] text-primary">music_note</span>微保背景音 (BGM)</span>
+                      <span className="text-on-surface font-semibold">{bgm}%</span>
+                    </div>
+                    <input
+                      className="w-full h-2 bg-surface-variant rounded-lg appearance-none cursor-pointer accent-primary"
+                      type="range"
+                      min="0"
+                      max="100"
+                      value={bgm}
+                      onChange={(e) => setBgm(e.target.value)}
+                    />
+                  </div>
+
+                  <div className="flex flex-col gap-1.5 bg-surface-container-lowest/60 p-space-sm rounded-lg">
+                    <div className="flex items-center justify-between font-label-sm text-label-sm text-on-surface-variant">
+                      <span className="flex items-center gap-1"><span className="material-symbols-outlined text-[16px] text-tertiary">volume_up</span>探险气泡音效 (SFX)</span>
+                      <span className="text-on-surface font-semibold">{sfx}%</span>
+                    </div>
+                    <input
+                      className="w-full h-2 bg-surface-variant rounded-lg appearance-none cursor-pointer accent-tertiary"
+                      type="range"
+                      min="0"
+                      max="100"
+                      value={sfx}
+                      onChange={(e) => setSfx(e.target.value)}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Collapsible Rules */}
+              <div className="bg-surface-container-low/90 rounded-xl overflow-hidden shadow-md">
+                <button
+                  onClick={() => setRulesOpen(!rulesOpen)}
+                  className="w-full px-space-md py-space-sm flex items-center justify-between bg-surface-container text-left hover:bg-surface-bright transition-colors cursor-pointer"
+                  type="button"
+                >
+                  <div className="flex items-center gap-2">
+                    <span className="material-symbols-outlined text-tertiary text-[18px]">menu_book</span>
+                    <span className="font-label-md text-label-md text-on-surface">微保9周年深海寻宝规则 / 探险指引</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="font-label-sm text-label-sm text-on-surface-variant">{rulesOpen ? '点击收起' : '点击展开'}</span>
+                    <span className={`material-symbols-outlined text-[20px] text-on-surface-variant transition-transform duration-200 ${rulesOpen ? 'rotate-180' : ''}`}>
+                      expand_more
+                    </span>
+                  </div>
+                </button>
+
+                {rulesOpen && (
+                  <div className="p-space-md flex flex-col gap-space-sm bg-surface-container-lowest/80 text-on-surface-variant">
+                    <div className="flex items-start gap-space-sm p-space-xs rounded-lg hover:bg-surface-container/50 transition-colors">
+                      <div className="w-6 h-6 rounded bg-primary/20 text-primary flex items-center justify-center font-label-score text-label-sm shrink-0 mt-0.5">1</div>
+                      <div className="flex flex-col">
+                        <span className="font-label-md text-label-md text-on-surface">翻牌寻宝 (Card Matching)</span>
+                        <p className="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">点击翻开 2 张深海符印。若呈现相同的微保海洋守护生物，立即纳入保障库并积累高额司庆积分！</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-space-sm p-space-xs rounded-lg hover:bg-surface-container/50 transition-colors">
+                      <div className="w-6 h-6 rounded bg-secondary/20 text-secondary flex items-center justify-center font-label-score text-label-sm shrink-0 mt-0.5">2</div>
+                      <div className="flex flex-col">
+                        <span className="font-label-md text-label-md text-on-surface">容错扣除 (Pressure Cost)</span>
+                        <p className="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">若翻开生物不一致，下潜设备承受水压，扣除 1 次容错心率机会。</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-space-sm p-space-xs rounded-lg hover:bg-surface-container/50 transition-colors">
+                      <div className="w-6 h-6 rounded bg-tertiary/20 text-tertiary flex items-center justify-center font-label-score text-label-sm shrink-0 mt-0.5">3</div>
+                      <div className="flex flex-col">
+                        <span className="font-label-md text-label-md text-on-surface">胜利领奖 (Mission Clear)</span>
+                        <p className="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">在容错耗尽前集齐全部微保守护生物，成功返航即可赢取腾讯微保9周年专属勋章与好礼！</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex flex-col gap-space-sm pt-space-xs">
+                <button
+                  onClick={onClose}
+                  className="group relative w-full h-14 bg-primary text-on-primary font-headline-sm text-headline-sm rounded-xl shadow-[0_6px_0_#004e42,0_10px_24px_rgba(100,226,199,0.45)] hover:bg-primary-fixed active:translate-y-1 active:shadow-[0_2px_0_#004e42] transition-all flex items-center justify-center gap-space-sm cursor-pointer"
+                  type="button"
+                >
+                  <span className="material-symbols-outlined text-[24px] group-hover:scale-110 transition-transform">play_arrow</span>
+                  <span>继续游戏 (返回 Expedition)</span>
+                </button>
+
+                <div className="grid grid-cols-2 gap-space-md">
+                  <button
+                    onClick={() => {
+                      if (window.confirm('确定要放弃当前进度并重置本轮潜水吗？')) {
+                        onRestart();
+                        onClose();
+                      }
+                    }}
+                    className="relative h-12 bg-secondary-container text-secondary-fixed font-label-md text-label-md rounded-xl shadow-[0_4px_0_#5a1b00] hover:brightness-110 active:translate-y-0.5 active:shadow-[0_1px_0_#5a1b00] transition-all flex items-center justify-center gap-2 cursor-pointer"
+                    type="button"
+                  >
+                    <span className="material-symbols-outlined text-[18px]">replay</span>
+                    <span>重新开始 (重置 Expedition)</span>
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      onClose();
+                      navigate('/');
+                    }}
+                    className="relative h-12 bg-surface-container-highest text-on-surface font-label-md text-label-md rounded-xl shadow-[0_4px_0_#001526] hover:bg-surface-bright active:translate-y-0.5 active:shadow-[0_1px_0_#001526] transition-all flex items-center justify-center gap-2 cursor-pointer"
+                    type="button"
+                  >
+                    <span className="material-symbols-outlined text-[18px] text-on-surface-variant">home</span>
+                    <span>返回主菜单 (返回 Dive Setup)</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Esc Hint */}
+              <div className="flex items-center justify-between text-on-surface-variant font-label-sm text-label-sm pt-space-xs border-t border-transparent">
+                <div className="flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-primary"></span>
+                  <span>微保寻宝序列号：WESURE-9TH-ALPHAX</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <span>按</span>
+                  <kbd className="px-1.5 py-0.5 bg-surface-container-lowest rounded text-primary font-mono text-[11px] shadow-sm">ESC</kbd>
+                  <span>直接解除暂停</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // ==========================================
+    // SCREEN 3: Failure Settlement (Mission Failed)
+    // ==========================================
+    function DefeatScreen() {
+      const navigate = useNavigate();
+
+      return (
+        <main className="relative z-10 w-full pt-16 min-h-[calc(100vh-64px)] flex flex-col justify-between">
+          <div className="flex flex-col w-full">
+            <div className="relative w-full overflow-hidden px-margin py-space-xl">
+              <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-[850px] h-[340px] bg-secondary-container/20 blur-[140px] rounded-full pointer-events-none"></div>
+              <div className="absolute -bottom-10 right-10 w-[420px] h-[420px] bg-primary/10 blur-[130px] rounded-full pointer-events-none"></div>
+
+              <div className="max-w-5xl mx-auto w-full relative z-10 flex flex-col items-center">
+                
+                {/* Emergency Beacon */}
+                <div className="flex items-center gap-space-sm bg-surface-container-high/90 px-space-md py-1.5 rounded-full shadow-lg mb-space-md">
+                  <span className="relative flex h-3 w-3">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-secondary opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-3 w-3 bg-secondary"></span>
+                  </span>
+                  <span className="font-label-sm text-label-sm uppercase tracking-widest text-secondary font-bold">O₂ DEPLETED · 微保探险能量耗尽</span>
+                  <span className="font-body-sm text-body-sm text-on-surface-variant/40">|</span>
+                  <span className="font-label-sm text-label-sm text-on-surface-variant font-mono">司庆深潜区 84.6M</span>
+                </div>
+
+                {/* Animated Diver Capsule */}
+                <div className="relative mb-space-md flex items-center justify-center">
+                  <div className="relative w-36 h-36 rounded-full bg-surface-container-lowest p-2 shadow-2xl flex items-center justify-center">
+                    <div className="w-full h-full rounded-full bg-surface-container-high flex flex-col items-center justify-center relative overflow-hidden shadow-inner">
+                      <div className="absolute -top-12 -left-8 w-32 h-24 bg-primary/20 rotate-45 rounded-full blur-md"></div>
+                      <span className="material-symbols-outlined text-[68px] text-secondary relative z-10 select-none animate-bounce" style={{ animationDuration: '2.4s' }}>
+                        scuba_diving
+                      </span>
+                      <div className="absolute bottom-2 px-space-xs py-0.5 rounded bg-surface-container-lowest/90 font-label-sm text-label-sm text-secondary font-bold tracking-wider">
+                        0% O₂
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Title */}
+                <div className="text-center max-w-xl mb-space-lg">
+                  <div className="inline-flex items-center gap-space-xs mb-space-xs">
+                    <span className="font-headline-lg text-headline-lg text-secondary tracking-normal drop-shadow-md">💔 寻宝未完成</span>
+                  </div>
+                  <p className="font-body-lg text-body-lg text-on-surface-variant mt-space-xs font-normal leading-relaxed">
+                    别灰心！微保9周年有海量保障宝藏等您发掘，补充氧气能量再来一局！
+                  </p>
+                </div>
+
+                {/* Bento Grid */}
+                <div className="w-full grid grid-cols-1 md:grid-cols-12 gap-space-md mb-space-xl">
+                  {/* Left Column: Specimen Snapshot */}
+                  <div className="md:col-span-4 bg-surface-container-high/70 backdrop-blur-xl rounded-xl p-space-lg flex flex-col justify-between shadow-xl relative overflow-hidden">
+                    <div className="flex items-center justify-between mb-space-md">
+                      <div className="flex items-center gap-space-xs">
+                        <span className="material-symbols-outlined text-primary text-[20px]">explore</span>
+                        <span className="font-label-md text-label-md text-primary uppercase tracking-wider">探险勘测回放</span>
+                      </div>
+                      <span className="font-label-sm text-label-sm bg-surface-container-lowest text-on-surface-variant px-2 py-0.5 rounded">海域 Alpha</span>
+                    </div>
+
+                    <div className="relative w-full h-44 rounded-lg overflow-hidden shadow-inner bg-surface-container-lowest flex items-center justify-center group mb-space-md">
+                      <img
+                        className="w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-500"
+                        alt="Replay Art"
+                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuCAGSixHLBqnCxwtVkZFHx8F-CdKoEMF1w7LwTiquZcLMTmE544-vS-PvHzK_7uhafGLidFv743vpDYbKjcI-nx4OseJATQoubgIC_f4jMAgNrSx7zkAgNaY0pYU2uFrCo6L25lh34cfg4zPEOmuPBWQdfGwZ5yLu889eqVavuZn8kwRymyotZT6sx5lBaALAC0ipoQabt-meHGS1mRGoWM318XLGHhCS3ui31X7SBkp1luJx_NRa6A"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-surface-container-lowest via-transparent to-transparent"></div>
+                      <div className="absolute bottom-2 left-2 right-2 flex items-center justify-between text-on-surface">
+                        <span className="font-label-sm text-label-sm bg-surface-container-high/90 px-2 py-1 rounded backdrop-blur">迷雾海沟 85m</span>
+                        <span className="font-label-sm text-label-sm text-tertiary flex items-center gap-0.5">
+                          <span className="material-symbols-outlined text-[14px]">lock_reset</span> 未打捞宝箱
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="bg-surface-container-lowest/80 p-space-sm rounded-lg flex items-center gap-space-sm">
+                      <span className="material-symbols-outlined text-tertiary text-[24px]">lightbulb</span>
+                      <p className="font-body-sm text-body-sm text-on-surface-variant">
+                        潜水员提示：下潜前可以先观察四角卡牌的轮廓特征，留存记忆点！
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Right Column: Telemetry & Log */}
+                  <div className="md:col-span-8 flex flex-col gap-space-md">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-space-md">
+                      <div className="bg-surface-container-high/80 backdrop-blur-xl p-space-md rounded-xl shadow-lg flex flex-col justify-between relative overflow-hidden">
+                        <div className="flex items-center justify-between text-on-surface-variant mb-space-sm">
+                          <span className="font-label-sm text-label-sm uppercase tracking-wider">剩余机会</span>
+                          <span className="material-symbols-outlined text-secondary text-[20px]">heart_broken</span>
+                        </div>
+                        <div>
+                          <div className="flex items-baseline gap-space-xs">
+                            <span className="font-label-score text-[32px] leading-none text-secondary">0</span>
+                            <span className="font-body-sm text-body-sm text-on-surface-variant">/ 5 次</span>
+                          </div>
+                          <p className="font-body-sm text-body-sm text-error mt-1 flex items-center gap-1">
+                            <span className="material-symbols-outlined text-[14px]">warning</span>
+                            容错额度已用尽
+                          </p>
+                        </div>
+                        <div className="w-full bg-surface-container-lowest h-1.5 rounded-full mt-3 overflow-hidden">
+                          <div className="bg-secondary h-full rounded-full" style={{ width: '0%' }}></div>
+                        </div>
+                      </div>
+
+                      <div className="bg-surface-container-high/80 backdrop-blur-xl p-space-md rounded-xl shadow-lg flex flex-col justify-between relative overflow-hidden">
+                        <div className="flex items-center justify-between text-on-surface-variant mb-space-sm">
+                          <span className="font-label-sm text-label-sm uppercase tracking-wider">最终进度</span>
+                          <span className="material-symbols-outlined text-primary text-[20px]">grid_view</span>
+                        </div>
+                        <div>
+                          <div className="flex items-baseline gap-space-xs">
+                            <span className="font-label-score text-[32px] leading-none text-primary">8 <span className="text-[18px] text-on-surface-variant font-normal">/ 12 对</span></span>
+                          </div>
+                          <p className="font-body-sm text-body-sm text-primary mt-1 font-medium">已找回 8 / 12 对微保保障宝藏 (66%)</p>
+                        </div>
+                        <div className="w-full bg-surface-container-lowest h-1.5 rounded-full mt-3 overflow-hidden">
+                          <div className="bg-primary h-full rounded-full" style={{ width: '66%' }}></div>
+                        </div>
+                      </div>
+
+                      <div className="bg-surface-container-high/80 backdrop-blur-xl p-space-md rounded-xl shadow-lg flex flex-col justify-between relative overflow-hidden">
+                        <div className="flex items-center justify-between text-on-surface-variant mb-space-sm">
+                          <span className="font-label-sm text-label-sm uppercase tracking-wider">坚持时间</span>
+                          <span className="material-symbols-outlined text-tertiary text-[20px]">timer</span>
+                        </div>
+                        <div>
+                          <div className="flex items-baseline gap-space-xs">
+                            <span className="font-label-score text-[32px] leading-none text-tertiary tracking-wider font-mono">03:15</span>
+                          </div>
+                          <p className="font-body-sm text-body-sm text-on-surface-variant mt-1">潜水时长稳步提升</p>
+                        </div>
+                        <div className="w-full bg-surface-container-lowest h-1.5 rounded-full mt-3 overflow-hidden">
+                          <div className="bg-tertiary h-full rounded-full" style={{ width: '78%' }}></div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Debrief Log */}
+                    <div className="bg-surface-container-high/70 backdrop-blur-xl rounded-xl p-space-lg shadow-xl flex flex-col justify-between flex-1">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-space-xs mb-space-md">
+                        <div className="flex items-center gap-space-xs">
+                          <span className="material-symbols-outlined text-secondary text-[22px]">troubleshoot</span>
+                          <span className="font-headline-sm text-headline-sm text-on-surface">微保9周年深海寻宝复盘日志</span>
+                        </div>
+                        <span className="font-label-sm text-label-sm text-on-surface-variant/80 bg-surface-container-low px-2.5 py-1 rounded-md">
+                          声呐日志编号 #084-FL
+                        </span>
+                      </div>
+
+                      <div className="bg-surface-container-lowest/80 rounded-lg p-space-md flex flex-col sm:flex-row items-start sm:items-center justify-between gap-space-md mb-space-md">
+                        <div className="flex items-center gap-space-md">
+                          <div className="w-12 h-12 rounded-lg bg-surface-container-high flex items-center justify-center shrink-0 shadow-inner">
+                            <span className="material-symbols-outlined text-secondary text-[28px]">bubble_chart</span>
+                          </div>
+                          <div>
+                            <div className="flex items-center gap-space-xs">
+                              <span className="font-headline-sm text-body-lg text-on-surface font-bold">水母 与 八爪鱼 辨识混淆</span>
+                              <span className="bg-error-container/40 text-error px-2 py-0.5 rounded text-label-sm font-label-sm font-bold">2 次失误</span>
+                            </div>
+                            <p className="font-body-sm text-body-sm text-on-surface-variant mt-0.5">微保保障小贴士：发光水母触角带柔和粉光，八爪鱼具备圆润吸盘，辨别清楚更易连击！</p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2 self-end sm:self-center shrink-0">
+                          <div className="w-9 h-9 rounded bg-surface-variant flex items-center justify-center text-[18px]" title="发光水母">🪼</div>
+                          <span className="material-symbols-outlined text-on-surface-variant text-[16px]">close</span>
+                          <div className="w-9 h-9 rounded bg-surface-variant flex items-center justify-center text-[18px]" title="深海八爪鱼">🐙</div>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center justify-between pt-space-xs text-on-surface-variant font-body-sm text-body-sm">
+                        <span className="flex items-center gap-1.5"><span className="material-symbols-outlined text-primary text-[16px]">waves</span> 深海探险如同守护之路，每一次下潜都在为全家绘制更稳固的微保保障地图。</span>
+                        <span className="font-mono text-label-sm text-primary">EXP +120 PTS</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Actions */}
+                <div className="w-full flex flex-col sm:flex-row items-center justify-center gap-space-md">
+                  <button
+                    onClick={() => navigate('/ocean-matrix-playfield')}
+                    className="w-full sm:w-auto px-8 py-3.5 bg-secondary hover:bg-secondary-fixed text-on-secondary font-headline-sm text-body-lg rounded-xl shadow-[0_6px_0_#822D03] active:translate-y-[4px] active:shadow-[0_2px_0_#822D03] transition-all flex items-center justify-center gap-space-xs group cursor-pointer"
+                    type="button"
+                  >
+                    <span className="material-symbols-outlined text-[24px] group-hover:rotate-180 transition-transform duration-500">replay</span>
+                    <span>重新寻宝</span>
+                  </button>
+
+                  <button
+                    onClick={() => navigate('/')}
+                    className="w-full sm:w-auto px-6 py-3.5 bg-surface-container-low hover:bg-surface-container text-on-surface-variant hover:text-on-surface font-label-md text-label-md rounded-xl transition-colors flex items-center justify-center gap-space-xs cursor-pointer"
+                    type="button"
+                  >
+                    <span className="material-symbols-outlined text-[20px]">home</span>
+                    <span>返回微保主页</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+      );
+    }
+
+    // ==========================================
+    // SCREEN 5: Victory Settlement (Mission Complete)
+    // ==========================================
+    function VictoryScreen() {
+      const navigate = useNavigate();
+      const [score, setScore] = useState(0);
+
+      useEffect(() => {
+        let frame;
+        const target = 12850;
+        const duration = 1200;
+        const start = performance.now();
+
+        function update(now) {
+          const elapsed = now - start;
+          const progress = Math.min(elapsed / duration, 1);
+          const easeOut = 1 - Math.pow(1 - progress, 3);
+          setScore(Math.floor(target * easeOut));
+          if (progress < 1) {
+            frame = requestAnimationFrame(update);
+          }
+        }
+        frame = requestAnimationFrame(update);
+        return () => cancelAnimationFrame(frame);
+      }, []);
+
+      const specimenBadges = [
+        {
+          name: '健康保障·小丑鱼',
+          count: '2尾',
+          img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCEoi6Gbvx7Gr3YGyJ2_IsCK4VKAdO2O-DjxEZ-WkCosWbUyZv053RS0-X5RjFzXYRWeEY5udZNW9VNluWR1VNA6PC7W2sdY8vq_Hvt-IpzZnA808nhRs29ko4OPANm4J5d1T9JhHIsCYNm7Td9oFX4h805ppTsrdFOsaUOoxpouMDtOmmqpVoOCRrjvJMso4LwKcPWelWFxhj0czQ06c_IyIZtQH2ork-dcUPy49TBueQ4eG0WwpwP'
+        },
+        {
+          name: '全家守护·八爪鱼',
+          count: '2尾',
+          img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCptAdx6qV0715_aqg8RDTWb4pP4Ob8Bl9-pXtMRdc2xFfNahiy_amtVX0DneUboxXrW987GKS4vRQB8B_45dnJ513pGlJo0hNJ_b3odTpgicrLxKzKPcJ7KSuIpr-KkACZl5XlfFQkxWHagQQ4HnZySp9HLzqL5Ip6yuCf8P184cyQZdQYSAQcUN_GmehnOZnCj2eGerVXTpup2T4yjjUxZWnkgzeKTxVDJ1wimlIOlOzGWxw-pGNG'
+        },
+        {
+          name: '长寿陪伴·绿海龟',
+          count: '2只',
+          img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDhyNNN_GaJEtxS82r6UlYbnOojgJ9hlehVkIL_5o1GC25HJ-H1f90056gqLfnsJYTEhbpGENPeSfbuXsCd_Qbogdt8UWUpDwS8A-oXtbPJZFhKkaelKWdEd2VWA0ksLHwseRd1_gDLL8O_RJYrJ3QRsolRAP8jc1N3qBN4b6ZIbfcPZc0nVN9uezzteqROfyY3Ih0pJpdAFFX3DFsTZZbKPq-x9DkDCZnT9JBD-rSUy01YNqxkQEIA'
+        },
+        {
+          name: '安心无忧·发光水母',
+          count: '2只',
+          img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCyNI5aWjwLKee6VH2wUYy-Cnu9elyXZMU7HGGH81FPeNOf99ir0_7yeGm3Eln2CGNMN_KSFIeCLvC5t4lZ_r_2e9kfBXMQSkByhj1w30TAxszV2KXRhaJNy2TWeQC4youMxQaGZGlvcZz5C8IfeC9MEr7tWGLVVNavNUDe5pZb8ETQ41kTQIwThmFBxVFL97dbpn8awNmHozysCajDpJaAd-SmVXUfErrXktp-xPE3dixBVJ6wowx7'
+        },
+        {
+          name: '财富增值·金海马',
+          count: '2尾',
+          img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuADWDI40TW_V4FO49IPNTBwDKbN5lDz500tWorXsLGaGma-SiODzlHvWhr9EmH2zYyMe2-WTZ9svs3vM5hoyXDTx8wBT5GdEmGmw4iUcABMmj1RftsIC5CHN9Zjs3Vy0fOa0AiwtmI4X5m8hejh_IERRiohYOBhq1CW526imD3_Mw887LhDq34Ybujsk8qDtcLgZd-B4AgTxD9gx1h8UG1hufG7m8yNu819RlsqVCFDwaPV9y28iHVP'
+        },
+        {
+          name: '出行护航·蝠鲼',
+          count: '2尾',
+          img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAFKnr-YXPYL2Db5dXHphkkM21Aske3H2eZDFHMf1cVWG7FRXJ3Hdixq7nu2X2E5D0grRA9CpyGZGN69HvT3XDshpdTA9T-gL91rsjjIas3euW20LbwRwYa7mIEe13OVkrPmvGVip864e2nzvMZuNNXAYPO1lonJUXaSGKedZvIqR_UugrhgtBN6wypM35ggmKP_zvg_YUWwMuaPk21Jj4uzg9Fbr2Oj7h5ulwINGkrk7mHvpF1W6U0'
+        },
+      ];
+
+      return (
+        <main className="relative z-10 w-full pt-16 min-h-[calc(100vh-64px)] flex flex-col justify-between">
+          <div className="flex flex-col w-full">
+            <div className="relative w-full overflow-hidden px-gutter py-space-xl">
+              
+              <div className="relative z-10 max-w-6xl mx-auto flex flex-col items-center text-center">
+                <div className="inline-flex items-center gap-space-sm px-space-lg py-1.5 rounded-full bg-surface-container-high/90 text-tertiary shadow-xl backdrop-blur-md mb-space-md">
+                  <span className="material-symbols-outlined text-[20px] text-tertiary" style={{ fontVariationSettings: "'FILL' 1" }}>stars</span>
+                  <span className="font-label-md text-label-md tracking-wider uppercase text-tertiary">Mission Complete · 任务圆满达成</span>
+                  <span className="material-symbols-outlined text-[20px] text-tertiary" style={{ fontVariationSettings: "'FILL' 1" }}>military_tech</span>
+                </div>
+
+                <h1 className="font-display-hero text-display-hero text-on-surface drop-shadow-[0_8px_24px_rgba(0,15,30,0.8)] flex items-center justify-center gap-space-sm flex-wrap">
+                  <span className="inline-block transform -rotate-6 text-tertiary">🎉</span>
+                  <span className="bg-gradient-to-r from-tertiary via-primary to-secondary bg-clip-text text-transparent">挑战成功！</span>
+                  <span className="inline-block transform rotate-6 text-tertiary">🏆</span>
+                </h1>
+                <p className="mt-space-sm max-w-2xl font-body-lg text-body-lg text-on-surface-variant font-medium">
+                  恭喜微保探险家！成功解锁腾讯微保9周年所有保障宝藏！
+                </p>
+
+                {/* 3 Golden Stars */}
+                <div className="mt-space-md flex items-center justify-center gap-space-sm">
+                  <div className="flex items-center justify-center w-14 h-14 rounded-2xl bg-surface-container-high shadow-lg text-tertiary transform -rotate-6 hover:rotate-0 transition-transform">
+                    <span className="material-symbols-outlined text-[36px]" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
+                  </div>
+                  <div className="flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-b from-tertiary-container to-surface-container-high shadow-xl text-tertiary-fixed transform scale-110 hover:scale-125 transition-transform">
+                    <span className="material-symbols-outlined text-[44px]" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
+                  </div>
+                  <div className="flex items-center justify-center w-14 h-14 rounded-2xl bg-surface-container-high shadow-lg text-tertiary transform rotate-6 hover:rotate-0 transition-transform">
+                    <span className="material-symbols-outlined text-[36px]" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
+                  </div>
+                </div>
+                <span className="mt-space-xs font-label-md text-label-md text-primary tracking-widest uppercase">3 Golden Star Marine Badges · 荣耀三星勋章</span>
+              </div>
+
+              {/* Main Bento */}
+              <div className="relative z-10 max-w-6xl mx-auto mt-space-xl grid grid-cols-1 lg:grid-cols-12 gap-space-lg items-stretch">
+                {/* Score & Rank Card */}
+                <div className="lg:col-span-4 flex flex-col justify-between rounded-xl bg-surface-container-high/85 backdrop-blur-xl p-space-lg shadow-xl overflow-hidden relative">
+                  <div>
+                    <div className="flex items-center justify-between">
+                      <span className="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Total Score</span>
+                      <span className="px-space-sm py-0.5 rounded-full bg-primary/20 text-primary font-label-sm text-label-sm font-bold">新纪录达成</span>
+                    </div>
+                    <div className="mt-space-xs flex items-baseline gap-space-xs">
+                      <span className="font-display-hero text-display-hero text-tertiary tracking-tight font-extrabold">
+                        {score.toLocaleString()}
+                      </span>
+                      <span className="font-headline-sm text-headline-sm text-on-surface-variant font-bold">PTS</span>
+                    </div>
+                    <div className="mt-space-xs flex items-center gap-space-xs text-primary font-body-sm text-body-sm">
+                      <span className="material-symbols-outlined text-[16px]">bolt</span>
+                      <span>完美连击奖励 +4,200 分</span>
+                    </div>
+                  </div>
+
+                  <div className="my-space-md rounded-xl overflow-hidden shadow-md">
+                    <img
+                      className="w-full h-44 object-cover"
+                      alt="Treasure Chest"
+                      src="https://lh3.googleusercontent.com/aida-public/AB6AXuDfWD3froDCy7N4eQdElWMrZssRTD_19C4kxBiGoUltgFHeacd4UEX3l-ZmiMYzxjmWtxzZZpcN0Bej4J9WmcJEqsbYAmiZC5g2LTlhrDor9k8azXrY1DR63ZvXkKyrasVy6NmlRh5uwITc9OlxIvfPWfSpPbxe0lLiHAULNPOkNSz0SfstzS12fxrfQf_gUSLJ-2jG3qCfmp0RP6q_6Zex2pgmgkuIkfLPqCV_3VjmgEgQqNEEr7G9"
+                    />
+                  </div>
+
+                  <div className="p-space-md rounded-xl bg-surface-container-lowest/80 flex items-center justify-between">
+                    <div className="flex items-center gap-space-sm">
+                      <span className="material-symbols-outlined text-secondary text-[28px]">military_tech</span>
+                      <div className="flex flex-col text-left">
+                        <span className="font-label-md text-label-md text-on-surface font-bold">微保9周年深海寻宝官</span>
+                        <span className="font-body-sm text-body-sm text-on-surface-variant">微保深海探索第 9 勘探区已通关</span>
+                      </div>
+                    </div>
+                    <span className="font-label-score text-label-score text-primary font-extrabold">S-Rank</span>
+                  </div>
+                </div>
+
+                {/* Performance Diagnostics */}
+                <div className="lg:col-span-8 flex flex-col justify-between rounded-xl bg-surface-container/90 backdrop-blur-xl p-space-lg shadow-xl">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm">
+                    <div>
+                      <h2 className="font-headline-md text-headline-md text-on-surface flex items-center gap-space-xs">
+                        <span className="material-symbols-outlined text-primary text-[28px]">query_stats</span>
+                        <span>微保9周年寻宝日志与表现评级</span>
+                      </h2>
+                      <p className="font-body-sm text-body-sm text-on-surface-variant">微保9周年深海探险寻宝结算报告 · 实时复盘数据指标</p>
+                    </div>
+                    <div className="self-start sm:self-auto px-space-md py-1 rounded-full bg-surface-container-highest text-primary font-label-md text-label-md">
+                      标准海域 · 24张牌
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-space-md my-space-lg">
+                    <div className="rounded-xl bg-surface-container-high/80 p-space-md flex flex-col justify-between shadow-sm">
+                      <div className="flex items-center justify-between text-on-surface-variant">
+                        <span className="font-label-sm text-label-sm uppercase">通关用时</span>
+                        <span className="material-symbols-outlined text-primary text-[18px]">timer</span>
+                      </div>
+                      <div className="mt-space-sm">
+                        <div className="font-label-score text-label-score text-on-surface font-extrabold">01:42</div>
+                        <div className="font-body-sm text-body-sm text-primary font-medium mt-0.5">S级极速通关</div>
+                      </div>
+                    </div>
+
+                    <div className="rounded-xl bg-surface-container-high/80 p-space-md flex flex-col justify-between shadow-sm">
+                      <div className="flex items-center justify-between text-on-surface-variant">
+                        <span className="font-label-sm text-label-sm uppercase">失误次数</span>
+                        <span className="material-symbols-outlined text-secondary text-[18px]">error_outline</span>
+                      </div>
+                      <div className="mt-space-sm">
+                        <div className="font-label-score text-label-score text-on-surface font-extrabold">仅 1 次</div>
+                        <div className="font-body-sm text-body-sm text-on-surface-variant mt-0.5">容错上限: 5 次</div>
+                      </div>
+                    </div>
+
+                    <div className="rounded-xl bg-surface-container-high/80 p-space-md flex flex-col justify-between shadow-sm">
+                      <div className="flex items-center justify-between text-on-surface-variant">
+                        <span className="font-label-sm text-label-sm uppercase">达成配对</span>
+                        <span className="material-symbols-outlined text-tertiary text-[18px]">fact_check</span>
+                      </div>
+                      <div className="mt-space-sm">
+                        <div className="font-label-score text-label-score text-tertiary font-extrabold">12 / 12 对</div>
+                        <div className="font-body-sm text-body-sm text-primary font-medium mt-0.5">100% 成功率</div>
+                      </div>
+                    </div>
+
+                    <div className="rounded-xl bg-surface-container-high/80 p-space-md flex flex-col justify-between shadow-sm">
+                      <div className="flex items-center justify-between text-on-surface-variant">
+                        <span className="font-label-sm text-label-sm uppercase">卡牌规模</span>
+                        <span className="material-symbols-outlined text-primary text-[18px]">dashboard</span>
+                      </div>
+                      <div className="mt-space-sm">
+                        <div className="font-label-score text-label-score text-on-surface font-extrabold">24 张</div>
+                        <div className="font-body-sm text-body-sm text-on-surface-variant mt-0.5">全牌组解密</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="rounded-xl bg-surface-container-low p-space-md flex flex-col gap-space-xs">
+                    <div className="flex items-center justify-between text-on-surface font-label-md text-label-md">
+                      <span className="flex items-center gap-space-xs">
+                        <span className="material-symbols-outlined text-tertiary text-[18px]">workspace_premium</span>
+                        <span>综合效率评定进度</span>
+                      </span>
+                      <span className="text-tertiary font-bold">98.4% (PERFECT RUN)</span>
+                    </div>
+                    <div className="w-full h-3 rounded-full bg-surface-container-lowest overflow-hidden flex">
+                      <div className="h-full bg-gradient-to-r from-primary via-tertiary to-secondary rounded-full" style={{ width: '98%' }}></div>
+                    </div>
+                    <div className="flex justify-between items-center text-on-surface-variant font-body-sm text-body-sm mt-1">
+                      <span>基础得分 8,650</span>
+                      <span>连击加成 +4,200</span>
+                      <span>总计 12,850 PTS</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Ocean Creature Compendium */}
+      
+
+              {/* Settlement Actions */}
+              <div className="relative z-10 max-w-4xl mx-auto mt-space-xl flex flex-col sm:flex-row items-center justify-center gap-space-md w-full pb-space-lg">
+                <button
+                  onClick={() => navigate('/ocean-matrix-playfield')}
+                  className="w-full sm:w-auto px-space-xl py-4 rounded-xl bg-gradient-to-r from-tertiary to-primary text-on-primary-fixed font-headline-sm text-headline-sm tracking-wide shadow-[0_8px_0_#005144,0_16px_28px_rgba(100,226,199,0.35)] hover:shadow-[0_4px_0_#005144,0_10px_20px_rgba(100,226,199,0.25)] hover:translate-y-1 active:translate-y-2 active:shadow-none transition-all flex items-center justify-center gap-space-sm group cursor-pointer"
+                  type="button"
+                >
+                  <span className="material-symbols-outlined text-[30px] group-hover:rotate-180 transition-transform duration-500">replay</span>
+                  <span>再玩一局</span>
+                </button>
+
+                <button
+                  onClick={() => alert('🏆 腾讯微保 9周年海底排行榜：恭喜您当前位列好友榜 TOP 1！')}
+                  className="w-full sm:w-auto px-space-lg py-4 rounded-xl bg-surface-container-high text-on-surface font-headline-sm text-headline-sm tracking-wide shadow-[0_6px_0_#000f1e] hover:shadow-[0_2px_0_#000f1e] hover:translate-y-1 active:translate-y-1.5 active:shadow-none transition-all flex items-center justify-center gap-space-sm hover:text-primary cursor-pointer"
+                  type="button"
+                >
+                  <span className="material-symbols-outlined text-[26px] text-tertiary">leaderboard</span>
+                  <span>查看排行榜</span>
+                </button>
+
+                <button
+                  onClick={() => navigate('/')}
+                  className="w-full sm:w-auto px-space-lg py-4 rounded-xl bg-surface-container-low text-on-surface-variant font-headline-sm text-headline-sm tracking-wide shadow-[0_6px_0_#000f1e] hover:shadow-[0_2px_0_#000f1e] hover:translate-y-1 active:translate-y-1.5 active:shadow-none transition-all flex items-center justify-center gap-space-sm hover:text-on-surface cursor-pointer"
+                  type="button"
+                >
+                  <span className="material-symbols-outlined text-[26px]">home</span>
+                  <span>返回主菜单</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </main>
+      );
+    }
+
+    // Rules Modal Shared Component
+    function RulesModal({ isOpen, onClose }) {
+      if (!isOpen) return null;
+      return (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-surface-container-lowest/85 backdrop-blur-lg p-4">
+          <div className="relative w-full max-w-xl bg-surface-container-high rounded-2xl p-6 sm:p-8 shadow-[0_20px_50px_rgba(0,0,0,0.8),inset_0_0_20px_rgba(67,198,172,0.2)] flex flex-col gap-6" style={{ outline: '2px solid #43c6ac' }}>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary">
+                  <span className="material-symbols-outlined text-[24px]">menu_book</span>
+                </div>
+                <div>
+                  <h2 className="font-headline-md text-headline-md text-on-surface">探险潜水守则</h2>
+                  <p className="font-label-sm text-label-sm text-primary uppercase tracking-wider">Dive Manual & Match Guide</p>
+                </div>
+              </div>
+              <button
+                onClick={onClose}
+                className="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center text-on-surface-variant hover:text-on-surface hover:bg-surface-bright transition-colors cursor-pointer"
+                type="button"
+              >
+                <span className="material-symbols-outlined text-[20px]">close</span>
+              </button>
+            </div>
+
+            <div className="flex flex-col gap-3.5">
+              <div className="flex items-start gap-4 p-3.5 rounded-xl bg-surface-container-lowest/70">
+                <div className="w-8 h-8 rounded-full bg-primary text-on-primary font-bold flex items-center justify-center shrink-0">1</div>
+                <div>
+                  <span className="font-headline-sm text-[16px] text-on-surface font-semibold">每次翻开两张牌</span>
+                  <p className="font-body-md text-body-md text-on-surface-variant mt-0.5">点击任意两张沉于海底的卡牌翻转展示，记忆其对应图案与坐标位置。</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-4 p-3.5 rounded-xl bg-surface-container-lowest/70">
+                <div className="w-8 h-8 rounded-full bg-tertiary text-on-tertiary font-bold flex items-center justify-center shrink-0">2</div>
+                <div>
+                  <span className="font-headline-sm text-[16px] text-on-surface font-semibold">匹配相同生物即可消除</span>
+                  <p className="font-body-md text-body-md text-on-surface-variant mt-0.5">若两张图案一致（如小丑鱼或发光水母），宝藏成功打捞并积蓄探险积分与连击！</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-4 p-3.5 rounded-xl bg-surface-container-lowest/70">
+                <div className="w-8 h-8 rounded-full bg-error text-on-error font-bold flex items-center justify-center shrink-0">3</div>
+                <div>
+                  <span className="font-headline-sm text-[16px] text-on-surface font-semibold">翻错消耗机会，机会归零失败</span>
+                  <p className="font-body-md text-body-md text-on-surface-variant mt-0.5">两张图案不符将重新盖上，并扣除1次容错机会。氧气耗尽潜水员将紧急上浮！</p>
+                </div>
+              </div>
+            </div>
+
+            <button
+              onClick={onClose}
+              className="w-full py-3 rounded-xl bg-primary text-on-primary font-headline-sm text-[16px] font-bold shadow-[0_4px_0_#004e42] active:translate-y-1 active:shadow-none transition-all cursor-pointer"
+              type="button"
+            >
+              我已掌握，准备下潜！ (READY)
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    // ==========================================
+    // TOP LEVEL APP COMPONENT
+    // ==========================================
+    function App() {
+      const [musicOn, setMusicOn] = useState(true);
+      const [sfxOn, setSfxOn] = useState(true);
+      const [isRulesModalOpen, setIsRulesModalOpen] = useState(false);
+      const [isPauseOpen, setIsPauseOpen] = useState(false);
+
+      // Global game configuration state (persisted across screens)
+      const [config, setConfig] = useState({
+        tiles: 24,
+        cols: 6,
+        rows: 4,
+        pairs: 12,
+        time: 3.0,
+        mistakes: 5
+      });
+
+      // Escape key listener to toggle pause
+      useEffect(() => {
+        const handleKeyDown = (e) => {
+          if (e.key === 'Escape') {
+            setIsPauseOpen((prev) => !prev);
+          }
+        };
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+      }, []);
+
+      return (
+        <div className="min-h-screen flex flex-col justify-between selection:bg-primary selection:text-on-primary">
+          <OceanBackground />
+          <Header
+            musicOn={musicOn}
+            setMusicOn={setMusicOn}
+            sfxOn={sfxOn}
+            setSfxOn={setSfxOn}
+            onOpenRules={() => setIsRulesModalOpen(true)}
+          />
+
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <SetupScreen
+                  config={config}
+                  setConfig={setConfig}
+                  onOpenRules={() => setIsRulesModalOpen(true)}
+                />
+              }
+            />
+            <Route
+              path="/ocean-matrix-playfield"
+              element={
+                <PlayfieldScreen
+                  config={config}
+                  onOpenPause={() => setIsPauseOpen(true)}
+                  onTriggerVictory={() => {}}
+                  onTriggerDefeat={() => {}}
+                />
+              }
+            />
+            <Route path="/mission-failed" element={<DefeatScreen />} />
+            <Route path="/mission-complete" element={<VictoryScreen />} />
+          </Routes>
+
+          {/* Pause Modal (Screen 2) */}
+          {isPauseOpen && (
+            <PauseScreen
+              onClose={() => setIsPauseOpen(false)}
+              onRestart={() => setIsPauseOpen(false)}
+            />
+          )}
+
+          {/* Rules Modal (Screen 1 Modal) */}
+          <RulesModal
+            isOpen={isRulesModalOpen}
+            onClose={() => setIsRulesModalOpen(false)}
+          />
+
+          <Footer />
+        </div>
+      );
+    }
+
+    const container = document.getElementById('root');
+    const root = createRoot(container);
+    root.render(
+      <MemoryRouter initialEntries={['/']}>
+        <App />
+      </MemoryRouter>
+    );
+  </script>
+</body>
+</html>
